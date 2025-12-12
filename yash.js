@@ -3,22 +3,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------------------- //
     // 1. Theme Toggler
     // ------------------- //
-    const themeBtn = document.getElementById('theme-toggle');
-    const body = document.body;
-    
-    if (localStorage.getItem('theme') === 'dark') {
-        body.classList.add('dark-mode');
-        themeBtn.querySelector('i').classList.replace('fa-moon', 'fa-sun');
-    }
+    // --- Theme (Day/Night Mode) Switcher ---
+const themeToggle = document.getElementById('theme-toggle');
+const sunIcon = 'fa-sun';
+const moonIcon = 'fa-moon';
 
-    themeBtn.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        const isDark = body.classList.contains('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        const icon = themeBtn.querySelector('i');
-        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        window.dispatchEvent(new Event('resize'));
-    });
+const applyTheme = () => {
+    const savedTheme = localStorage.getItem('theme') || 'dark'; 
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    const icon = themeToggle.querySelector('i');
+    icon.classList.toggle(moonIcon, savedTheme === 'dark');
+    icon.classList.toggle(sunIcon, savedTheme === 'light');
+};
+
+// Apply theme on first page load
+applyTheme();
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    const icon = themeToggle.querySelector('i');
+    icon.classList.toggle(sunIcon);
+    icon.classList.toggle(moonIcon);
+});
+
 
     // ------------------- //
     // 2. ELLIPTIC CURVE ANIMATION
