@@ -3,34 +3,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------------------- //
     // 1. Theme Toggler
     // ------------------- //
-    // --- Theme (Day/Night Mode) Switcher ---
-const themeToggle = document.getElementById('theme-toggle');
-const sunIcon = 'fa-sun';
-const moonIcon = 'fa-moon';
+    const themeBtn = document.getElementById('theme-toggle');
+const body = document.body;
 
-const applyTheme = () => {
-    const savedTheme = localStorage.getItem('theme') || 'dark'; 
-    document.documentElement.setAttribute('data-theme', savedTheme);
+// DEFAULT TO DARK MODE if no theme is saved
+let savedTheme = localStorage.getItem('theme');
 
-    const icon = themeToggle.querySelector('i');
-    icon.classList.toggle(moonIcon, savedTheme === 'dark');
-    icon.classList.toggle(sunIcon, savedTheme === 'light');
-};
+if (!savedTheme) {
+    // No theme stored → set dark mode as default
+    localStorage.setItem('theme', 'dark');
+    savedTheme = 'dark';
+}
 
-// Apply theme on first page load
-applyTheme();
+if (savedTheme === 'dark') {
+    body.classList.add('dark-mode');
+    themeBtn.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+} else {
+    body.classList.remove('dark-mode');
+    themeBtn.querySelector('i').classList.replace('fa-sun', 'fa-moon');
+}
 
-themeToggle.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-
-    const icon = themeToggle.querySelector('i');
-    icon.classList.toggle(sunIcon);
-    icon.classList.toggle(moonIcon);
+themeBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    const icon = themeBtn.querySelector('i');
+    icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    window.dispatchEvent(new Event('resize'));
 });
+
 
 
     // ------------------- //
